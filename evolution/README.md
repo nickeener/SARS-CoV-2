@@ -22,7 +22,7 @@ Note that sites with no changes (i.e. perfectly conserved sites) cannot be detec
 
 ## Galaxy Workflow
 
-We have created a [Galaxy workflow](https://usegalaxy.org/u/nickeener/w/imported-imported-evolution-analysis-1) that will allow anyone to identify sites that may be under selection. It will take a reference and the start/end coordinates of a gene/orf of interest, excise the appropriate subsequence from the reference, then use pairwise alignments to find the corresponding homologous subsequences from a set of full genomes to be aligned (called "reads" here). Identical sequences will be compressed into a single sequence at this step. It will then perform a codon-aware MSA of those sequences with the reference sequence (this is all done by the tool Kc-Align). The resulting alignment is used to produce a phylogenetic tree file (.nhx) using IQ Tree. The alignment fasta and nhx file from IQ Tree are then fed to HYPHY tools (SLAC, FEL, MEME, PRIME) which will perform the actual selection analysis. The alignment fasta is also given to TN93, which will calculate genetic distance using Tamura Nei 93 distance, allowing the level of diversity/divergence to be calculated.
+We have created a [Galaxy workflow](https://usegalaxy.org/u/nickeener/w/imported-imported-evolution-analysis-1) that will allow anyone to identify sites that may be under selection. It will take a reference and the start/end coordinates of a gene/orf of interest, excise the appropriate subsequence from the reference, then use pairwise alignments to find the corresponding homologous subsequences from a set of full genomes to be aligned (called "reads" here). Identical sequences will be compressed into a single sequence at this step. It will then perform a codon-aware MSA of those sequences with the reference sequence (this is all done by the tool Kc-Align). The resulting alignment is used to produce a phylogenetic tree file (.nhx) using IQ Tree. The alignment fasta and nhx file from IQ Tree are then fed to HyPhy tools (SLAC, FEL, MEME, PRIME) which will perform the actual selection analysis. The alignment fasta is also given to TN93, which will calculate genetic distance using Tamura Nei 93 distance, allowing the level of diversity/divergence to be calculated.
 
 ### Inputs
 
@@ -36,7 +36,24 @@ The workflow requires three input files to function:
 
 ### Outputs
 
-The workflow will output five collections when complete. These are the outputs of the four HYPHY tools (SLAC, FEL, MEME, PRIME) and TN93 and each item within these collections will be the result of running that tool on each gene given as input (the name of each item in the collection will be the same as the gene name given in the tabular input.
+The workflow will output five collections when complete. These are the outputs of the four HyPhy tools (PRIME, SLAC, MEME, FEL) and TN93 and each item within these collections will be the result of running that tool on each gene given as input (the name of each item in the collection will be the same as the gene name given in the tabular input.
 
+### What Can the Outputs Tell Us?
 
+**PRIME** (Property Informed Model of Evolution): Does evolution at specific sites in a coding alignment preserve or alter some biochemical properties?
 
+Identify biochemical evolutionary constraints or changes with site level resolution: e.g. site 23 is evolving to conserve residue polarity, but alter it's volume.
+
+**SLAC** (Single Likeliehood Ancestor Counting): Which site(s) in a gene are subject to pervasive, i.e. consistently across the entire phylogeny, diversifying selection?
+
+The phenomenon of pervasive selection is generally most prevalent in pathogen evolution and any biological system influenced by evolutionary arms race dynamics (or balancing selection), including adaptive immune escape by viruses. As such, SLAC is ideally suited to identify sites under positive selection which represent candidate sites subject to strong selective pressures across the entire phylogeny. SLAC provides legacy functionality as a counting-based method adapted for phylogenetic applications. In general, this method will be the least statistically robust (compared to FEL or FUBAR), but it is the most directly interpretable.
+
+**MEME** (Mixed Effects Model of Evolution): Which site(s) in a gene are subject to pervasive or episodic, i.e. only on a single lineage or subset of lineages, diversifying selection?
+
+The phenomenon of pervasive selection is generally most prevalent in pathogen evolution and any biological system influenced by evolutionary arms race dynamics (or balancing selection), including adaptive immune escape by viruses. MEME is ideally suited to identify sites under positive selection which represent candidate sites subject to strong selective pressures across the entire phylogeny or only on parts of the phylogeny.
+
+**FEL** (Fixed Effect Likelihood): Which site(s) in a gene are subject to pervasive, i.e. consistently across the entire phylogeny, diversifying selection?
+
+The phenomenon of pervasive selection is generally most prevalent in pathogen evolution and any biological system influenced by evolutionary arms race dynamics (or balancing selection), including adaptive immune escape by viruses. As such, FEL is ideally suited to identify sites under positive selection which represent candidate sites subject to strong selective pressures across the entire phylogeny.
+
+For help interpreting the JSON outputs of the HyPhy tools, see the [documentation](http://hyphy.org/resources/json-fields.pdf). Visualization methods for the HyPhy tools (except for PRIME) can be found [here](http://vision.hyphy.org/)
