@@ -36,7 +36,7 @@ The workflow requires three input files to function:
 
 ### Outputs
 
-The workflow will output five collections when complete. These are the outputs of the four HyPhy tools (PRIME, SLAC, MEME, FEL) and TN93 and each item within these collections will be the result of running that tool on each gene given as input (the name of each item in the collection will be the same as the gene name given in the tabular input.
+The final output of this workflow are five Galaxy collections (one for each HyPhy tool and one for TN93) wherein each item is the result of that tool on each gene/ORF analyzed. Each item will also be named appropriately according to the name given for each gene/ORF in the tabular input.
 
 ### What Can the Outputs Tell Us?
 
